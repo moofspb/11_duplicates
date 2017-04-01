@@ -10,7 +10,7 @@ def parse_args():
 
 
 def collect_files(path):
-    all_files = {}  # duplicate_files in format {(file, file_size): [file_paths]}
+    all_files = {}  # in format {(file, file_size): [file_paths]}
     for root, dirs, files in os.walk(path):
         for file in files:
             file_path = os.path.join(root, file)
@@ -23,18 +23,22 @@ def collect_files(path):
 
 
 def find_duplicates(collected_files):
-    #for file in collected_files:
-     #   if len(file)
-    #return {k: v for k, v in collected_files if len(v) > 1}
-    return {print(k, p) for k, p in collected_files}
+    return list(filter(lambda x: len(x) > 1, collected_files.values()))
 
 
 def print_duplicate_files(duplicates):
-    print("")
+    if duplicates:
+        print('Dublicates files:')
+        for paths in duplicates:
+            print('--------------------------')
+            for path in paths:
+                print(path)
+    else:
+        print('No duplicates files found!')
 
 
 if __name__ == '__main__':
-    path = parse_args()
-    abc = collect_files(path)
-    #b = collect_files('/home/moof/test')
-    print(find_duplicates(abc))
+    args = parse_args()
+    parsed_files = collect_files(args.filepath)
+    duplicate_files = find_duplicates(parsed_files)
+    print_duplicate_files(duplicate_files)
