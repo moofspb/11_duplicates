@@ -9,7 +9,7 @@ def parse_args():
     return args
 
 
-def collect_files(path):
+def find_duplicates(path):
     all_files = {}  # in format {(file, file_size): [file_paths]}
     for root, dirs, files in os.walk(path):
         for file in files:
@@ -19,16 +19,12 @@ def collect_files(path):
                 all_files[(file, file_size)].append(file_path)
             else:
                 all_files[(file, file_size)] = [file_path]
-    return all_files
+    return list(filter(lambda x: len(x) > 1, all_files.values()))
 
 
-def find_duplicates(collected_files):
-    return list(filter(lambda x: len(x) > 1, collected_files.values()))
-
-
-def print_duplicate_files(duplicates):
+def print_duplicates(duplicates):
     if duplicates:
-        print('Dublicates files:')
+        print('Duplicates files:')
         for paths in duplicates:
             print('--------------------------')
             for path in paths:
@@ -39,6 +35,5 @@ def print_duplicate_files(duplicates):
 
 if __name__ == '__main__':
     args = parse_args()
-    parsed_files = collect_files(args.filepath)
-    duplicate_files = find_duplicates(parsed_files)
-    print_duplicate_files(duplicate_files)
+    parsed_files = find_duplicates(args.filepath)
+    print_duplicates(parsed_files)
